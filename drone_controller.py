@@ -1,6 +1,4 @@
-import threading
 import socket
-
 
 host = '127.0.0.1'
 port = 9000
@@ -10,7 +8,7 @@ tello_command_port = 8889
 tello_state_port = 8890
 tello_stream_port = 11111
 
-locaddr = (host,port)
+locaddr = (host, port)
 tello_command_address = (tello_IP, tello_command_port)
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -30,16 +28,17 @@ function send_path() converts them into command strings and sends them to Tello 
 
 '''
 
+
 def send_path_list(direction_list):
     trans = 'go'
     rot_list = ['cw', 'ccw']
     commands = list()
     try:
         for direction in direction_list:
-            if any(type(v)!=int for v in direction[1:]):
+            if any(type(v) != int for v in direction[1:]):
                 raise TypeError
             if direction[0] == trans:
-                if any((not 20 <= v <= 500 )for v in direction[1:4]) | (not 10 <= direction[4] <= 100):
+                if any((not 20 <= abs(v) <= 500) for v in direction[1:4]) | (not 10 <= direction[4] <= 100):
                     raise ValueError
                 # commands.append(direction[0] + " " + str(direction[1]) + " " + str(direction[2]) + " " + str(direction[3] )+ " " + str(direction[4]))
                 commands.append(bytearray(''.join([str(x) + ' ' for x in direction])[:-1], 'utf8'))
@@ -68,5 +67,3 @@ def send_path_list(direction_list):
 # recvThread.start()
 
 # Create a UDP socket
-
-
